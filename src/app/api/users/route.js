@@ -15,6 +15,11 @@ export const GET = async () => {
 
 export const POST = async (req) => {
   const { firstName, lastName, email, password } = await req.json()
+  if (!firstName || !lastName) {
+    return NextResponse.error({
+      message: "First Name and Last Name are Empty!",
+    })
+  }
   try {
     const hashedPassword = await bcrypt.hash(password, 10)
     const result = await prisma.users.create({

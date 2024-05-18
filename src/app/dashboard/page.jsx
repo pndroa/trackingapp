@@ -3,6 +3,7 @@ import { getSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import LogoutButton from "@/components/Logout/LogoutButton"
+import Navbar from "@/components/Navbar/Navbar"
 
 const Dashboard = () => {
   const [session, setSession] = useState()
@@ -23,6 +24,7 @@ const Dashboard = () => {
 
   return (
     <div>
+      <Navbar />
       <div>You are logged in :3</div>
       <LogoutButton />
     </div>

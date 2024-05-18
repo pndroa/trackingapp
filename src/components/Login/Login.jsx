@@ -109,7 +109,7 @@ export default function Login() {
             <input
               className={styles.inputElemente}
               type="password"
-              placeholder="*********"
+              placeholder="Password"
               value={userInfo.password}
               onChange={({ target }) =>
                 setUserInfo({ ...userInfo, password: target.value })

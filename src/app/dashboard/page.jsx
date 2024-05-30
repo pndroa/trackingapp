@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import LogoutButton from "@/components/Logout/LogoutButton"
 import Navbar from "@/components/Navbar/Navbar"
+import Link from "next/link"
 
 const Dashboard = () => {
   const [session, setSession] = useState()
@@ -26,6 +27,9 @@ const Dashboard = () => {
     <div>
       <Navbar />
       <div>You are logged in :3</div>
+      <Link href="/dashboard/summary">
+        <button>Summary Page</button>
+      </Link>
       <LogoutButton />
     </div>
   )

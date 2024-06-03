@@ -14,7 +14,7 @@ const Summary = () => {
   //make popup visible
   const mealSelected = (meal) => {
     setShowOverlay(true), // when true overlay is seen
-      setChooseMeal(meal)
+    setChooseMeal(meal)
   }
 
   //make popup visible
@@ -33,13 +33,13 @@ const Summary = () => {
     e.preventDefault()
     const main = mainDish
     console.log(main)
-    let meat1 = "no"
-    let vegetarian1 = "no"
-    let vegan1 = "no"
+    let meat1 = false
+    let vegetarian1 = false
+    let vegan1 = false
     //finde the one thats picked 
-    if (main === 'meat') { meat1 = 'yes' }
-    else if (main === 'vegetarian') { vegetarian1 = 'yes' }
-    else if (main === 'vegan') { vegan1 = 'yes' }
+    if (main === 'meat') { meat1 = true }
+    else if (main === 'vegetarian') { vegetarian1 = true }
+    else if (main === 'vegan') { vegan1 = true }
 
     const formData = new FormData(e.currentTarget)
     const meal = {
@@ -52,7 +52,7 @@ const Summary = () => {
       vegetarian: vegetarian1,
       vegan: vegan1
     }
-
+    /** 
     console.log(meal.name)
     console.log(meal.calories)
     console.log(meal.carbohydrates)
@@ -61,6 +61,8 @@ const Summary = () => {
     console.log(meal.meat)
     console.log(meal.vegetarian)
     console.log(meal.vegan)
+*/
+    console.log(meal)
 
     closePage();
   }

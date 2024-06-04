@@ -132,7 +132,7 @@ const Summary = () => {
         Kalorien: item.calories,
         Kohlenhydrate: item.carbohydrates,
         Proteine: item.protein,
-        Fat: item.fat,
+        Fett: item.fat,
         Fleisch: item.containsMeat,
         Vegetarisch: item.vegetarian,
         Vegan: item.vegan,

@@ -1,28 +1,65 @@
-import styles from './FeatureButtons.module.css';
+import styles from "./FeatureButtons.module.css"
+import Link from "next/link"
 
 const FeatureButtons = () => {
-    return(
-        <div className={styles.container}>
-            {/* FEATURES */}
-            <div className={styles.featuresTop}>
-                <div className={styles.featuresTopItems}>
-                    <strong>Meal Registration</strong> 
-                </div>
-                <div className={styles.featuresTopItems}>
-                    <strong>Rating System</strong>
-                </div>
-            </div>
-
-            <div className={styles.featuresBottom}>
-                <div className={styles.featuresBottomItems}>
-                    <strong>Statistical Tracking</strong> 
-                </div>
-                <div className={styles.featuresBottomItems}>
-                    <strong>Settings</strong>
-                </div>
-            </div>
+  return (
+    <div className={styles.container}>
+      {/* FEATURES */}
+      <div className={styles.featuresTop}>
+        <div className={styles.featuresTopItems}>
+          <Link
+            href="/dashboard/summary"
+            style={{
+              color: "black",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+          >
+            <strong>Meal Registration</strong>
+          </Link>
         </div>
-    )
+        <div className={styles.featuresTopItems}>
+          <Link
+            href="/dashboard/nutrirating"
+            style={{
+              color: "black",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+          >
+            <strong>Rating System</strong>
+          </Link>
+        </div>
+      </div>
+
+      <div className={styles.featuresBottom}>
+        <div className={styles.featuresBottomItems}>
+          <Link
+            href="/dashboard/summary"
+            style={{
+              color: "black",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+          >
+            <strong>Statistical Tracking</strong>
+          </Link>
+        </div>
+        <div className={styles.featuresBottomItems}>
+          <Link
+            href="/dashboard/summary"
+            style={{
+              color: "black",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+          >
+            <strong>Settings</strong>
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
 }
 
-export default FeatureButtons;
+export default FeatureButtons

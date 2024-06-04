@@ -40,9 +40,9 @@ export default function DashboardBox() {
   };
 
   const setFixedValues = (meal, carbsValue, fatValue, proteinValue) => {
-    const carbsLimit = 65;
-    const fatLimit = 40;
-    const proteinLimit = 50;
+    const carbsLimit = 500;
+    const fatLimit = 150;
+    const proteinLimit = 200;
 
     document.getElementById(`${meal}-carbs-value`).innerText = `${carbsValue}g`;
     document.getElementById(`${meal}-carbs-circle`).style.setProperty('--percent', `${(carbsValue / carbsLimit) * 100}%`);

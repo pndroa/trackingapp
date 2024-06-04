@@ -14,7 +14,7 @@ const Summary = () => {
   //make popup visible
   const mealSelected = (meal) => {
     setShowOverlay(true), // when true overlay is seen
-    setChooseMeal(meal)
+      setChooseMeal(meal)
   }
 
   //make popup visible

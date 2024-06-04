@@ -1,16 +1,41 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import LogoutButton from "@/components/Logout/LogoutButton"
-import Navbar from "@/components/Navbar/Navbar"
 import styles from "./Header.module.css"
 import Image from "next/image"
 import profilePictureIcon from "@/app/pictures/acheron.png"
+import { getSession } from "next-auth/react"
 
 const Header = () => {
   const [showRewards, setShowRewards] = useState(false)
+  const [user, setUser] = useState([
+    {
+      uid: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      createDate: "",
+      updateDate: "",
+    },
+  ])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const currentSession = await getSession()
+      if (currentSession && currentSession.user) {
+        const res = await fetch(`/api/users/${currentSession.user.email}`)
+        const jsonData = await res.json()
+        setUser(jsonData)
+      }
+    }
+    fetchData()
+  }, [])
 
   const handleLevelClick = () => {
     setShowRewards(!showRewards)
   }
+
+  console.log(user)
 
   return (
     <header className={styles.header}>
@@ -25,7 +50,9 @@ const Header = () => {
         </div>
       </div>
       <div className={styles.text}>
-        We are so happy to see <span className={styles.you}>you</span> again!
+        <h1 className={styles.you}>
+          Welcome {user[0].firstName} {user[0].lastName}
+        </h1>
       </div>
       <div className={styles.premium}>Go Premium!</div>
       <div className={styles.navBar}>

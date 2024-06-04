@@ -2,18 +2,34 @@
 import { AgGridReact } from "ag-grid-react"
 import "ag-grid-community/styles/ag-grid.css"
 import "ag-grid-community/styles/ag-theme-quartz.css"
-import { ColDef } from "ag-grid-community"
 import { useEffect, useState } from "react"
-import { Session } from "next-auth"
 import { getSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import styles from "./Summary.module.css"
 
 const Summary = () => {
   const [data, setData] = useState()
   const [breakfastData, setBreakfastData] = useState()
   const [lunchData, setLunchData] = useState()
   const [dinnerData, setDinnerData] = useState()
-  const router = useRouter()
+  const [showOverlay, setShowOverlay] = useState(false) //overlay false till button clicked
+  const [chooseMeal, setChooseMeal] = useState("noMeal")
+  const [mainDish, setMainDish] = useState("nothing")
+  const [breakfast, setBreakfast] = useState(false)
+  const [lunch, setLunch] = useState(false)
+  const [dinner, setDinner] = useState(false)
+  const [foodData, setFoodData] = useState({
+    name: "",
+    calories: "",
+    carbohydrates: "",
+    protein: "",
+    fat: "",
+    meat: "",
+    vegetarian: "",
+    vegan: "",
+    breakfast: false,
+    lunch: false,
+    dinner: false,
+  })
 
   const handleDeleteButton = async ({ Id }) => {
     const result = confirm("Are you sure want to delete this food")
@@ -81,7 +97,7 @@ const Summary = () => {
     { field: "Kalorien" },
     { field: "Kohlenhydrate" },
     { field: "Proteine" },
-    { field: "Fat" },
+    { field: "Fett" },
     { field: "Fleisch" },
     { field: "Vegetarisch" },
     { field: "Vegan" },
@@ -135,8 +151,93 @@ const Summary = () => {
     }
   }, [data])
 
+  //make popup visible
+  const mealSelected = (meal) => {
+    setShowOverlay(true), // when true overlay is seen
+      setChooseMeal(meal)
+  }
+
+  //make popup visible
+  const closePage = () => {
+    setShowOverlay(false) // when false overlay is invisible
+  }
+
+  //buttons to choose meat, vegetarian, vegan
+  const onOptionChange = (e) => {
+    setMainDish(e.target.value)
+  }
+
+  const onSubmit = async (e) => {
+    e.preventDefault()
+
+    try {
+      const currentSession = await getSession()
+      if (!currentSession) {
+        console.error("Failed to get session")
+        return
+      }
+
+      const main = mainDish
+      console.log(main)
+
+      let meat1 = false
+      let vegetarian1 = false
+      let vegan1 = false
+
+      // Finde die Auswahl
+      if (main === "meat") {
+        meat1 = true
+      } else if (main === "vegetarian") {
+        vegetarian1 = true
+      } else if (main === "vegan") {
+        vegan1 = true
+      }
+
+      const formData = new FormData(e.currentTarget)
+
+      const foodData = {
+        name: formData.get("name"),
+        calories: formData.get("calories"),
+        carbohydrates: formData.get("carbohydrates"),
+        protein: formData.get("protein"),
+        fat: formData.get("fat"),
+        meat: meat1,
+        vegetarian: vegetarian1,
+        vegan: vegan1,
+        breakfast: breakfast,
+        lunch: lunch,
+        dinner: dinner,
+        email: currentSession.user.email,
+      }
+
+      console.log(foodData)
+
+      const res = await fetch(`/api/foods`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(foodData),
+      })
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`)
+      }
+      // location.reload();
+    } catch (error) {
+      console.error(error)
+    }
+
+    closePage()
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+    }
+  }
+
   return (
-    <div>
+    <div id="container">
       <div>
         <h1>Breakfast</h1>
         <div
@@ -211,25 +312,198 @@ const Summary = () => {
         Summary Page
         <button
           onClick={() => {
-            alert("Add your breakfast")
+            setBreakfast(true)
+            mealSelected("breakfast")
           }}
         >
           Add Breakfast
         </button>
         <button
           onClick={() => {
-            alert("Add your lunch")
+            setLunch(true)
+            mealSelected("lunch")
           }}
         >
           Add lunch
         </button>
         <button
           onClick={() => {
-            alert("Add your dinner")
+            setDinner(true)
+            mealSelected("dinner")
           }}
         >
           Add dinner
         </button>
+        <div>
+          {showOverlay && (
+            <div className={styles.overlay}>
+              <div className={styles.text}>
+                <form onSubmit={onSubmit} onKeyPress={handleKeyPress}>
+                  <button
+                    type="button"
+                    className={styles.button}
+                    onClick={() => closePage()}
+                  >
+                    close
+                  </button>
+                  <div className={styles.tables}>
+                    <div className={styles.headline}>
+                      Enter your {chooseMeal}
+                    </div>
+                    <div>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              <label className={styles.label} htmlFor="name">
+                                Name :
+                              </label>
+                              <input
+                                type="name"
+                                id="name"
+                                name="name"
+                                required
+                              ></input>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label
+                                className={styles.label}
+                                htmlFor="calories"
+                              >
+                                Calories :
+                              </label>
+                              <input
+                                type="calories"
+                                id="calories"
+                                name="calories"
+                                required
+                              ></input>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label
+                                className={styles.label}
+                                htmlFor="carbohydrates"
+                              >
+                                Carbohydrates :
+                              </label>
+                              <input
+                                type="carbohydrates"
+                                id="carbohydrates"
+                                name="carbohydrates"
+                                required
+                              ></input>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label className={styles.label} htmlFor="protein">
+                                Protein :
+                              </label>
+                              <input
+                                type="protein"
+                                id="protein"
+                                name="protein"
+                                required
+                              ></input>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label className={styles.label} htmlFor="fat">
+                                Fat :
+                              </label>
+                              <input
+                                type="fat"
+                                id="fat"
+                                name="fat"
+                                required
+                              ></input>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label className={styles.label} htmlFor="meat">
+                                Meat :
+                              </label>
+                              <input
+                                type="radio"
+                                id="meat"
+                                name="mainDish"
+                                value="meat"
+                                checked={mainDish === "meat"}
+                                onChange={onOptionChange}
+                                className="radio-button"
+                                required
+                              ></input>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label
+                                className={styles.label}
+                                htmlFor="vegetarian"
+                              >
+                                Vegetarian :
+                              </label>
+                              <input
+                                type="radio"
+                                id="vegetarian"
+                                name="mainDish"
+                                value="vegetarian"
+                                checked={mainDish === "vegetarian"}
+                                onChange={onOptionChange}
+                                className="radio-button"
+                                required
+                              ></input>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label className={styles.label} htmlFor="vegan">
+                                Vegan :
+                              </label>
+                              <input
+                                type="radio"
+                                id="vegan"
+                                name="mainDish"
+                                value="vegan"
+                                checked={mainDish === "vegan"}
+                                onChange={onOptionChange}
+                                className="radio-button"
+                                required
+                              ></input>
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <td>
+                              <button
+                                type="submit"
+                                className={styles.sendButton}
+                              >
+                                Send
+                              </button>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

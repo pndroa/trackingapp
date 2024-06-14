@@ -5,8 +5,8 @@ export default function DashboardBox() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [startX, setStartX] = useState(0);
   const [endX, setEndX] = useState(0);
-  const [data, setData] = useState([{breakfast: false, createData: '', dinner: false, email: '', foods: [], lunch: false, mid: '',rating: 0,titel: '',updateDate: ''}]);
-  const [breakfast, setBreakfast] = useState({title: '', totalCarbs: 0, totalFat: 0, totalProtein: 0, co2: 0 });
+  const [data, setData] = useState([{ breakfast: false, createData: '', dinner: false, email: '', foods: [], lunch: false, mid: '', rating: 0, titel: '', updateDate: '' }]);
+  const [breakfast, setBreakfast] = useState({ title: '', totalCarbs: 0, totalFat: 0, totalProtein: 0, co2: 0 });
   const [lunch, setLunch] = useState({ title: '', totalCarbs: 0, totalFat: 0, totalProtein: 0, co2: 0 });
   const [dinner, setDinner] = useState({ title: '', totalCarbs: 0, totalFat: 0, totalProtein: 0, co2: 0 });
   const [isProcessed, setIsProcessed] = useState(false);
@@ -46,24 +46,25 @@ export default function DashboardBox() {
   };
 
   useEffect(() => {
-    const fetchData = async () =>{
-   
+    const fetchData = async () => {
+
       const response = await fetch("/api/meals", {
-       method: "GET",
+        method: "GET",
       })
       const jsonData = await response.json()
       setData(jsonData)
     }
     fetchData()
-    
-  },[])
 
-console.log()
+  }, [])
 
-useEffect(() => {
-data.map((index) => { 
-    console.log(`index mid ${index.titel}`)
-      
+  console.log()
+
+  useEffect(() => {
+    let countAmountMeals = 0
+    data.map((index) => {
+      console.log(`index mid ${index.titel}`)
+
       // Initialize variables
       let title = index.titel
       let totalCarbs = 0
@@ -73,27 +74,31 @@ data.map((index) => {
 
       // Aggregate values
       index.foods.forEach(food => {
-         totalCarbs += food.carbohydrates
-         totalFat += food.fat
-         totalProtein += food.protein
+        totalCarbs += food.carbohydrates
+        totalFat += food.fat
+        totalProtein += food.protein
         if (food.containsMeat) {
           co2 += 5
-        }})
-      console.log(`carbs ${totalCarbs}`)
-      console.log(`fat ${totalFat}`)
-      console.log(`protein ${totalProtein}`)
-      console.log(`co2 ${co2}`) 
-      setBreakfast({ title: title,  totalCarbs: totalCarbs, totalFat: totalFat, totalProtein: totalProtein, co2: co2 } )
-      
+        }
+      })
 
-
+      if (data.empty != true) {
+        setBreakfast({ title: title, totalCarbs: totalCarbs, totalFat: totalFat, totalProtein: totalProtein, co2: co2 })
+      }
+      if (countAmountMeals == 1) {
+        setBreakfast({ title: title, totalCarbs: totalCarbs, totalFat: totalFat, totalProtein: totalProtein, co2: co2 })
+      }
+      else if (countAmountMeals == 2) {
+        setBreakfast({ title: title, totalCarbs: totalCarbs, totalFat: totalFat, totalProtein: totalProtein, co2: co2 })
+      }
+      countAmountMeals += 1
     })
     setIsProcessed(true);
     console.log('processed')
-},[data, isProcessed])
+  }, [data, isProcessed])
 
   console.log(data)
-  
+
 
 
   const setFixedValues = (meal, carbsValue, fatValue, proteinValue, co2Value) => {
@@ -113,16 +118,16 @@ data.map((index) => {
     document.getElementById(`${meal}-protein-circle`).style.setProperty('--percent', `${(proteinValue / proteinLimit) * 100}%`);
     document.getElementById(`${meal}-protein-limit`).innerText = `${proteinValue} / ${proteinLimit}g`;
 
-    document.getElementById(`${meal}-co2-value`).innerText = `${co2Value}g`;
+
+    document.getElementById(`${meal}-co2-value`).innerText = `${co2Value} CO2`;
     document.getElementById(`${meal}-co2-circle`).style.setProperty('--percent', `${(co2Value / proteinLimit) * 100}%`);
-    document.getElementById(`${meal}-co2-limit`).innerText = `${co2Value} / ${proteinLimit}g`;
   };
 
   useEffect(() => {
-    if(isProcessed == true){
-    setFixedValues('breakfast', breakfast.totalCarbs, breakfast.totalFat, breakfast.totalProtein, breakfast.co2);
-    setFixedValues('lunch', 55, 30, 40, 20);
-    setFixedValues('dinner', 65, 40, 50, 10);
+    if (isProcessed == true) {
+      setFixedValues('breakfast', breakfast.totalCarbs, breakfast.totalFat, breakfast.totalProtein, breakfast.co2);
+      setFixedValues('lunch', lunch.totalCarbs, lunch.totalFat, lunch.totalProtein, lunch.co2);
+      setFixedValues('dinner', dinner.totalCarbs, dinner.totalFat, dinner.totalProtein, dinner.co2);
     }
   }, [isProcessed, breakfast]);
 
@@ -131,7 +136,7 @@ data.map((index) => {
       <div className={styles.slides} id="slides" style={{ transform: `translateX(${-currentSlide * 100 / 3}%)` }}>
         <div className={styles.slide} id="breakfast">
           <h2>Breakfast</h2>
-          <p>Avocado Toast with Poached Egg</p>
+          <p>{breakfast.title}</p>
           <div className={styles.stats}>
             <div className={styles.stat}>
               <div className={`${styles.statCircle} ${styles.carbs}`} id="breakfast-carbs-circle">
@@ -165,7 +170,7 @@ data.map((index) => {
         </div>
         <div className={styles.slide} id="lunch">
           <h2>Lunch</h2>
-          <p>Grilled Chicken Caesar Salad</p>
+          <p>{lunch.title}</p>
           <div className={styles.stats}>
             <div className={styles.stat}>
               <div className={`${styles.statCircle} ${styles.carbs}`} id="lunch-carbs-circle">
@@ -199,7 +204,7 @@ data.map((index) => {
         </div>
         <div className={styles.slide} id="dinner">
           <h2>Dinner</h2>
-          <p>Grilled Salmon with Sweet Potatoes</p>
+          <p>{dinner.title}</p>
           <div className={styles.stats}>
             <div className={styles.stat}>
               <div className={`${styles.statCircle} ${styles.carbs}`} id="dinner-carbs-circle">
@@ -227,7 +232,6 @@ data.map((index) => {
                 <div className={styles.statValue} id="dinner-co2-value"></div>
               </div>
               <div className={styles.statLabel}>CO2</div>
-              <div className={styles.statLimit} id="dinner-co2-limit"></div>
             </div>
           </div>
         </div>

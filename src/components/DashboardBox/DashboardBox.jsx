@@ -5,6 +5,12 @@ export default function DashboardBox() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [startX, setStartX] = useState(0);
   const [endX, setEndX] = useState(0);
+  const [data, setData] = useState([{breakfast: false, createData: '', dinner: false, email: '', foods: [], lunch: false, mid: '',rating: 0,titel: '',updateDate: ''}]);
+  const [breakfast, setBreakfast] = useState({title: '', totalCarbs: 0, totalFat: 0, totalProtein: 0, co2: 0 });
+  const [lunch, setLunch] = useState({ title: '', totalCarbs: 0, totalFat: 0, totalProtein: 0, co2: 0 });
+  const [dinner, setDinner] = useState({ title: '', totalCarbs: 0, totalFat: 0, totalProtein: 0, co2: 0 });
+  const [isProcessed, setIsProcessed] = useState(false);
+
 
   const showSlide = (index) => {
     setCurrentSlide(index);
@@ -39,7 +45,58 @@ export default function DashboardBox() {
     }
   };
 
-  const setFixedValues = (meal, carbsValue, fatValue, proteinValue) => {
+  useEffect(() => {
+    const fetchData = async () =>{
+   
+      const response = await fetch("/api/meals", {
+       method: "GET",
+      })
+      const jsonData = await response.json()
+      setData(jsonData)
+    }
+    fetchData()
+    
+  },[])
+
+console.log()
+
+useEffect(() => {
+data.map((index) => { 
+    console.log(`index mid ${index.titel}`)
+      
+      // Initialize variables
+      let title = index.titel
+      let totalCarbs = 0
+      let totalFat = 0
+      let totalProtein = 0
+      let co2 = 0
+
+      // Aggregate values
+      index.foods.forEach(food => {
+         totalCarbs += food.carbohydrates
+         totalFat += food.fat
+         totalProtein += food.protein
+        if (food.containsMeat) {
+          co2 += 5
+        }})
+      console.log(`carbs ${totalCarbs}`)
+      console.log(`fat ${totalFat}`)
+      console.log(`protein ${totalProtein}`)
+      console.log(`co2 ${co2}`) 
+      setBreakfast({ title: title,  totalCarbs: totalCarbs, totalFat: totalFat, totalProtein: totalProtein, co2: co2 } )
+      
+
+
+    })
+    setIsProcessed(true);
+    console.log('processed')
+},[data, isProcessed])
+
+  console.log(data)
+  
+
+
+  const setFixedValues = (meal, carbsValue, fatValue, proteinValue, co2Value) => {
     const carbsLimit = 65;
     const fatLimit = 40;
     const proteinLimit = 50;
@@ -55,13 +112,19 @@ export default function DashboardBox() {
     document.getElementById(`${meal}-protein-value`).innerText = `${proteinValue}g`;
     document.getElementById(`${meal}-protein-circle`).style.setProperty('--percent', `${(proteinValue / proteinLimit) * 100}%`);
     document.getElementById(`${meal}-protein-limit`).innerText = `${proteinValue} / ${proteinLimit}g`;
+
+    document.getElementById(`${meal}-co2-value`).innerText = `${co2Value}g`;
+    document.getElementById(`${meal}-co2-circle`).style.setProperty('--percent', `${(co2Value / proteinLimit) * 100}%`);
+    document.getElementById(`${meal}-co2-limit`).innerText = `${co2Value} / ${proteinLimit}g`;
   };
 
   useEffect(() => {
-    setFixedValues('breakfast', 45, 20, 30);
-    setFixedValues('lunch', 55, 30, 40);
-    setFixedValues('dinner', 65, 40, 50);
-  }, []);
+    if(isProcessed == true){
+    setFixedValues('breakfast', breakfast.totalCarbs, breakfast.totalFat, breakfast.totalProtein, breakfast.co2);
+    setFixedValues('lunch', 55, 30, 40, 20);
+    setFixedValues('dinner', 65, 40, 50, 10);
+    }
+  }, [isProcessed, breakfast]);
 
   return (
     <div className={styles.container} id="container" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
@@ -91,6 +154,13 @@ export default function DashboardBox() {
               <div className={styles.statLabel}>Protein</div>
               <div className={styles.statLimit} id="breakfast-protein-limit"></div>
             </div>
+            <div className={styles.stat}>
+              <div className={`${styles.statCircle} ${styles.co2}`} id="breakfast-co2-circle">
+                <div className={styles.statValue} id="breakfast-co2-value"></div>
+              </div>
+              <div className={styles.statLabel}>CO2</div>
+              <div className={styles.statLimit} id="breakfast-co2-limit"></div>
+            </div>
           </div>
         </div>
         <div className={styles.slide} id="lunch">
@@ -118,6 +188,13 @@ export default function DashboardBox() {
               <div className={styles.statLabel}>Protein</div>
               <div className={styles.statLimit} id="lunch-protein-limit"></div>
             </div>
+            <div className={styles.stat}>
+              <div className={`${styles.statCircle} ${styles.co2}`} id="lunch-co2-circle">
+                <div className={styles.statValue} id="lunch-co2-value"></div>
+              </div>
+              <div className={styles.statLabel}>CO2</div>
+              <div className={styles.statLimit} id="lunch-co2-limit"></div>
+            </div>
           </div>
         </div>
         <div className={styles.slide} id="dinner">
@@ -144,6 +221,13 @@ export default function DashboardBox() {
               </div>
               <div className={styles.statLabel}>Protein</div>
               <div className={styles.statLimit} id="dinner-protein-limit"></div>
+            </div>
+            <div className={styles.stat}>
+              <div className={`${styles.statCircle} ${styles.co2}`} id="dinner-co2-circle">
+                <div className={styles.statValue} id="dinner-co2-value"></div>
+              </div>
+              <div className={styles.statLabel}>CO2</div>
+              <div className={styles.statLimit} id="dinner-co2-limit"></div>
             </div>
           </div>
         </div>

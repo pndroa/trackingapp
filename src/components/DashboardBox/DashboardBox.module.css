@@ -66,6 +66,11 @@
 .statCircle.protein {
     background: conic-gradient(#ff9800 var(--percent), #e0e0e0 0);
 }
+
+.statCircle.co2 {
+    background: conic-gradient(blue var(--percent), #e0e0e0 0);
+}
+
 .navDots {
     position: absolute;
     bottom: 10px;

@@ -44,8 +44,6 @@ model Meals {
 model Statistics {
   sid String @id @default(uuid()) @unique
   totalCalories Int
-  totalProtein Int
-  totalFat Int
   averageMealRating Int
   meatFreeMeals Int
   co2Savings Int

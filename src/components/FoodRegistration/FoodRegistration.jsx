@@ -4,7 +4,7 @@ import "ag-grid-community/styles/ag-grid.css"
 import "ag-grid-community/styles/ag-theme-quartz.css"
 import { useEffect, useState } from "react"
 import { getSession } from "next-auth/react"
-import styles from "./Summary.module.css"
+import styles from "./FoodRegistration.module.css"
 
 const Summary = () => {
   const [data, setData] = useState()
@@ -12,7 +12,7 @@ const Summary = () => {
   const [lunchData, setLunchData] = useState()
   const [dinnerData, setDinnerData] = useState()
   const [showOverlay, setShowOverlay] = useState(false) //overlay false till button clicked
-  const [chooseMeal, setChooseMeal] = useState("noMeal")
+  const [chooseFood, setChooseFood] = useState("noFood")
   const [mainDish, setMainDish] = useState("nothing")
   const [breakfast, setBreakfast] = useState(false)
   const [lunch, setLunch] = useState(false)
@@ -29,13 +29,16 @@ const Summary = () => {
     breakfast: false,
     lunch: false,
     dinner: false,
+    email: "",
   })
+  const [session, setSession] = useState()
 
-  const handleDeleteButton = async ({ Id }) => {
+  const handleDeleteButton = async ({ fid }) => {
+    console.log(fid)
     const result = confirm("Are you sure want to delete this food")
     if (result) {
       try {
-        const res = await fetch(`/api/foods/byFid/${Id}`, {
+        const res = await fetch(`/api/foods/byFid/${fid}`, {
           method: "DELETE",
         })
         location.reload()
@@ -45,12 +48,12 @@ const Summary = () => {
     }
   }
 
-  const handleEditButton = async ({ Id }) => {
+  const handleEdit = async (data) => {
     try {
-      const res = await fetch(`/api/foods/byFid/${Id}`, {
+      const res = await fetch(`/api/foods/byFid/${data.fid}`, {
         method: "PATCH",
+        body: JSON.stringify(data),
       })
-      location.reload()
     } catch (error) {
       console.error(error)
     }
@@ -59,20 +62,6 @@ const Summary = () => {
   const CustomButtonComponent = ({ data }) => {
     return (
       <div>
-        <button
-          style={{
-            backgroundColor: "#512da8",
-            color: "#fff",
-            fontSize: "12px",
-            padding: "5px 10px",
-            border: "1px solid transparent",
-            borderRadius: "8px",
-            cursor: "pointer",
-          }}
-          onClick={() => handleEditButton(data)}
-        >
-          Edit
-        </button>
         <button
           style={{
             backgroundColor: "#512da8",
@@ -93,14 +82,77 @@ const Summary = () => {
   }
 
   const [colDefs, setColDefs] = useState([
-    { field: "Name" },
-    { field: "Kalorien" },
-    { field: "Kohlenhydrate" },
-    { field: "Proteine" },
-    { field: "Fett" },
-    { field: "Fleisch" },
-    { field: "Vegetarisch" },
-    { field: "Vegan" },
+    {
+      field: "name",
+      editable: true,
+      onCellValueChanged: (event) => {
+        const newData = event.data
+        handleEdit(newData)
+      },
+    },
+    {
+      field: "calories",
+      editable: true,
+      onCellValueChanged: (event) => {
+        const newData = event.data
+        console.log(newData)
+        handleEdit(newData)
+      },
+    },
+    {
+      field: "carbohydrates",
+      editable: true,
+      onCellValueChanged: (event) => {
+        const newData = event.data
+        console.log(newData)
+        handleEdit(newData)
+      },
+    },
+    {
+      field: "protein",
+      editable: true,
+      onCellValueChanged: (event) => {
+        const newData = event.data
+        console.log(newData)
+        handleEdit(newData)
+      },
+    },
+    {
+      field: "fat",
+      editable: true,
+      onCellValueChanged: (event) => {
+        const newData = event.data
+        console.log(newData)
+        handleEdit(newData)
+      },
+    },
+    {
+      field: "containsMeat",
+      editable: true,
+      onCellValueChanged: (event) => {
+        const newData = event.data
+        console.log(newData)
+        handleEdit(newData)
+      },
+    },
+    {
+      field: "vegetarian",
+      editable: true,
+      onCellValueChanged: (event) => {
+        const newData = event.data
+        console.log(newData)
+        handleEdit(newData)
+      },
+    },
+    {
+      field: "vegan",
+      editable: true,
+      onCellValueChanged: (event) => {
+        const newData = event.data
+        console.log(newData)
+        handleEdit(newData)
+      },
+    },
     {
       field: "actions",
       headerName: "Actions",
@@ -127,23 +179,23 @@ const Summary = () => {
   useEffect(() => {
     if (data) {
       const formattedData = data.map((item) => ({
-        Id: item.fid,
-        Name: item.name,
-        Kalorien: item.calories,
-        Kohlenhydrate: item.carbohydrates,
-        Proteine: item.protein,
-        Fett: item.fat,
-        Fleisch: item.containsMeat,
-        Vegetarisch: item.vegetarian,
-        Vegan: item.vegan,
-        Breakfast: item.breakfast,
-        Lunch: item.lunch,
-        Dinner: item.dinner,
+        fid: item.fid,
+        name: item.name,
+        calories: item.calories,
+        carbohydrates: item.carbohydrates,
+        protein: item.protein,
+        fat: item.fat,
+        containsMeat: item.containsMeat,
+        vegetarian: item.vegetarian,
+        vegan: item.vegan,
+        breakfast: item.breakfast,
+        lunch: item.lunch,
+        dinner: item.dinner,
       }))
 
-      const breakfastItems = formattedData.filter((item) => item.Breakfast)
-      const lunchItems = formattedData.filter((item) => item.Lunch)
-      const dinnerItems = formattedData.filter((item) => item.Dinner)
+      const breakfastItems = formattedData.filter((item) => item.breakfast)
+      const lunchItems = formattedData.filter((item) => item.lunch)
+      const dinnerItems = formattedData.filter((item) => item.dinner)
 
       setBreakfastData(breakfastItems)
       setLunchData(lunchItems)
@@ -152,9 +204,9 @@ const Summary = () => {
   }, [data])
 
   //make popup visible
-  const mealSelected = (meal) => {
+  const foodSelected = (food) => {
     setShowOverlay(true), // when true overlay is seen
-      setChooseMeal(meal)
+      setChooseFood(food)
   }
 
   //make popup visible
@@ -167,67 +219,59 @@ const Summary = () => {
     setMainDish(e.target.value)
   }
 
+  useEffect(() => {
+    const setCurrentSession = async () => {
+      const s = await getSession()
+      setSession(s)
+    }
+
+    setCurrentSession()
+  }, [])
+
   const onSubmit = async (e) => {
     e.preventDefault()
+    const main = mainDish
+    let meat1 = false
+    let vegetarian1 = false
+    let vegan1 = false
+    //finde the one thats picked
+    if (main === "meat") {
+      meat1 = true
+    } else if (main === "vegetarian") {
+      vegetarian1 = true
+    } else if (main === "vegan") {
+      vegan1 = true
+    }
+
+    const formData = new FormData(e.currentTarget)
+    const food = {
+      name: formData.get("name"),
+      calories: Number(formData.get("calories")),
+      carbohydrates: Number(formData.get("carbohydrates")),
+      protein: Number(formData.get("protein")),
+      fat: Number(formData.get("fat")),
+      containsMeat: meat1,
+      vegetarian: vegetarian1,
+      vegan: vegan1,
+      email: session.user.email,
+      breakfast,
+      lunch,
+      dinner,
+    }
+
+    console.log(food)
 
     try {
-      const currentSession = await getSession()
-      if (!currentSession) {
-        console.error("Failed to get session")
-        return
-      }
-
-      const main = mainDish
-      console.log(main)
-
-      let meat1 = false
-      let vegetarian1 = false
-      let vegan1 = false
-
-      // Finde die Auswahl
-      if (main === "meat") {
-        meat1 = true
-      } else if (main === "vegetarian") {
-        vegetarian1 = true
-      } else if (main === "vegan") {
-        vegan1 = true
-      }
-
-      const formData = new FormData(e.currentTarget)
-
-      const foodData = {
-        name: formData.get("name"),
-        calories: formData.get("calories"),
-        carbohydrates: formData.get("carbohydrates"),
-        protein: formData.get("protein"),
-        fat: formData.get("fat"),
-        meat: meat1,
-        vegetarian: vegetarian1,
-        vegan: vegan1,
-        breakfast: breakfast,
-        lunch: lunch,
-        dinner: dinner,
-        email: currentSession.user.email,
-      }
-
-      console.log(foodData)
-
-      const res = await fetch(`/api/foods`, {
+      const res = await fetch("/api/foods", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(foodData),
+        body: JSON.stringify(food),
       })
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`)
-      }
-      // location.reload();
     } catch (error) {
-      console.error(error)
+      console.log(error)
     }
 
     closePage()
+    location.reload()
   }
 
   const handleKeyPress = (e) => {
@@ -238,8 +282,11 @@ const Summary = () => {
 
   return (
     <div id="container">
+      <header style={{ marginBottom: "1rem", marginLeft: "40%" }}>
+        <h1>Enter your Food</h1>
+      </header>
       <div>
-        <h1>Breakfast</h1>
+        <h2>Breakfast</h2>
         <div
           className="ag-theme-quartz"
           style={{
@@ -261,7 +308,7 @@ const Summary = () => {
       </div>
 
       <div>
-        <h1>Lunch</h1>
+        <h2>Lunch</h2>
         <div
           className="ag-theme-quartz"
           style={{
@@ -283,7 +330,7 @@ const Summary = () => {
       </div>
 
       <div>
-        <h1>Dinner</h1>
+        <h2>Dinner</h2>
         <div
           className="ag-theme-quartz"
           style={{
@@ -309,11 +356,10 @@ const Summary = () => {
         </div>
       </div>
       <div>
-        Summary Page
         <button
           onClick={() => {
             setBreakfast(true)
-            mealSelected("breakfast")
+            foodSelected("breakfast")
           }}
         >
           Add Breakfast
@@ -321,7 +367,7 @@ const Summary = () => {
         <button
           onClick={() => {
             setLunch(true)
-            mealSelected("lunch")
+            foodSelected("lunch")
           }}
         >
           Add lunch
@@ -329,7 +375,7 @@ const Summary = () => {
         <button
           onClick={() => {
             setDinner(true)
-            mealSelected("dinner")
+            foodSelected("dinner")
           }}
         >
           Add dinner
@@ -348,7 +394,7 @@ const Summary = () => {
                   </button>
                   <div className={styles.tables}>
                     <div className={styles.headline}>
-                      Enter your {chooseMeal}
+                      Enter your {chooseFood}
                     </div>
                     <div>
                       <table>

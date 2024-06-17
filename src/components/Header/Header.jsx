@@ -35,8 +35,6 @@ const Header = () => {
     setShowRewards(!showRewards)
   }
 
-  console.log(user)
-
   return (
     <header className={styles.header}>
       <div className={styles.profile}>

@@ -14,16 +14,18 @@ export const GET = async () => {
 export const POST = async (req) => {
   try {
     const {
-      name,
       calories,
       carbohydrates,
-      fat,
-      protein,
-      containsMeat,
-      vegetarian,
-      vegan,
-      mealid,
       email,
+      fat,
+      containsMeat,
+      name,
+      protein,
+      vegan,
+      vegetarian,
+      breakfast,
+      lunch,
+      dinner,
     } = await req.json()
 
     if (!email) {
@@ -40,8 +42,11 @@ export const POST = async (req) => {
         containsMeat,
         vegetarian,
         vegan,
-        mealid: mealid || null, // Optionaler Wert
+        mealid: null,
         email, // Erforderlicher Wert
+        breakfast,
+        lunch,
+        dinner,
       },
     })
 

@@ -8,14 +8,14 @@ const FeatureButtons = () => {
       <div className={styles.featuresTop}>
         <div className={styles.featuresTopItems}>
           <Link
-            href="/dashboard/summary"
+            href="/dashboard/foodRegistration"
             style={{
               color: "black",
               textDecoration: "none",
               cursor: "pointer",
             }}
           >
-            <strong>Meal Registration</strong>
+            <strong>Food Registration</strong>
           </Link>
         </div>
         <div className={styles.featuresTopItems}>
@@ -35,7 +35,7 @@ const FeatureButtons = () => {
       <div className={styles.featuresBottom}>
         <div className={styles.featuresBottomItems}>
           <Link
-            href="/dashboard/summary"
+            href="/dashboard/foodRegistration"
             style={{
               color: "black",
               textDecoration: "none",
@@ -47,14 +47,14 @@ const FeatureButtons = () => {
         </div>
         <div className={styles.featuresBottomItems}>
           <Link
-            href="/dashboard/summary"
+            href="/dashboard/mealRegistration"
             style={{
               color: "black",
               textDecoration: "none",
               cursor: "pointer",
             }}
           >
-            <strong>Settings</strong>
+            <strong>Meal Registration</strong>
           </Link>
         </div>
       </div>

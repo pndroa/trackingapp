@@ -8,21 +8,19 @@ import FeatureButtons from "@/components/FeatureButtons/FeatureButtons"
 import Footer from "@/components/Footer/Footer"
 
 const Dashboard = () => {
-  const [session, setSession] = useState()
   const router = useRouter()
 
   useEffect(() => {
     const handleSession = async () => {
       const session = await getSession()
 
-      if (session) {
-        setSession(session)
-      } else {
+      if (!session) {
         router.push("/auth/login")
+        router.refresh()
       }
     }
     handleSession()
-  }, [router])
+  })
 
   return (
     <div>

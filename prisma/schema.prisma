@@ -30,6 +30,9 @@ model Meals {
   mid String @id @default(uuid()) @unique
   titel String
   rating Int
+  breakfast     Boolean
+  lunch         Boolean
+  dinner        Boolean
   createDate DateTime @default(now())
   updateDate DateTime @updatedAt
   user Users @relation(fields: [email], references: [email])
@@ -41,6 +44,8 @@ model Meals {
 model Statistics {
   sid String @id @default(uuid()) @unique
   totalCalories Int
+  totalProtein Int
+  totalFat Int
   averageMealRating Int
   meatFreeMeals Int
   co2Savings Int
@@ -62,6 +67,9 @@ model foods {
   containsMeat  Boolean
   vegetarian    Boolean
   vegan         Boolean
+  breakfast     Boolean
+  lunch         Boolean
+  dinner        Boolean
   createDate    DateTime @default(now())
   updateDate    DateTime @updatedAt
   meal          Meals?    @relation(fields: [mealid], references: [mid])

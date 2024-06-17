@@ -35,7 +35,7 @@ const FeatureButtons = () => {
       <div className={styles.featuresBottom}>
         <div className={styles.featuresBottomItems}>
           <Link
-            href="/dashboard/foodRegistration"
+            href="/dashboard/statisticalTracking"
             style={{
               color: "black",
               textDecoration: "none",

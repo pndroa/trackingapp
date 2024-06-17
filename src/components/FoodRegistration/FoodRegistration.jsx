@@ -5,6 +5,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css"
 import { useEffect, useState } from "react"
 import { getSession } from "next-auth/react"
 import styles from "./FoodRegistration.module.css"
+import Header from "../Header/Header"
 
 const Summary = () => {
   const [data, setData] = useState()
@@ -282,6 +283,7 @@ const Summary = () => {
 
   return (
     <div id="container">
+      <Header />
       <header style={{ marginBottom: "1rem", marginLeft: "40%" }}>
         <h1>Enter your Food</h1>
       </header>
